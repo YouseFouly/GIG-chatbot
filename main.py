@@ -41,7 +41,7 @@ if "chat_history" not in st.session_state:
 # -------------------- Title --------------------
 st.markdown("""
 <div style='text-align: center;'>
-    <h3>Hello! I’m Gigo, your virtual assistant</h3>
+    <h3>Hello! I’m Gigo, your virtual assistant🥰</h3>
 </div>
 """, unsafe_allow_html=True)
 
@@ -97,6 +97,7 @@ Answer clearly and help students solve their academic problems.
 
     except Exception as e:
         st.error(f"❌ Error getting response: {e}")
+
 
 
 
