@@ -24,7 +24,7 @@ def load_lottie_url(url: str):
         return None
 
 lottie_json = load_lottie_url(
-    "https://lottie.host/cc13fe2f-25c4-4547-b89a-5059f4044de4/Gn62lcFzBl.json"
+    "https://lottie.host/embed/e7f0c7fa-c922-43a8-b033-cac1e1a1d503/a6vCrYiNp8.json"
 )
 
 # -------------------- Page Config --------------------
@@ -96,3 +96,4 @@ Answer clearly and help students solve their academic problems.
 
     except Exception as e:
         st.error(f"❌ Error getting response: {e}")
+
