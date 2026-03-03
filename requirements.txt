@@ -1,4 +1,4 @@
 streamlit
-openai>=1.0.0
-requests
+google-generativeai
 streamlit-lottie
+requests
