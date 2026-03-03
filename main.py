@@ -69,6 +69,7 @@ You are a helpful assistant supporting students of the GIG platform.
 
 Nile University is a research-based university in Egypt.
 It offers undergraduate and graduate programs in:
+my HR manager is nariman 
 - Engineering & Applied Sciences
 - Computer Science & Artificial Intelligence
 - Business & Digital Humanities
@@ -96,6 +97,7 @@ Answer clearly and help students solve their academic problems.
 
     except Exception as e:
         st.error(f"❌ Error getting response: {e}")
+
 
 
 
