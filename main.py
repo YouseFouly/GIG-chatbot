@@ -66,7 +66,7 @@ lottie = load_lottie(
 )
 
 if lottie:
-    st_lottie(lottie, height=300)
+    st_lottie(lottie, height=200)
 
 # ========================= CHAT =========================
 SYSTEM_PROMPT = """
@@ -108,7 +108,6 @@ if user_input:
         st.markdown(reply)
 
 # ========================= SCREENSHOT SOLVER =========================
-st.divider()
 st.title("📸 Screenshot Problem Solver")
 
 uploaded_file = st.file_uploader(
