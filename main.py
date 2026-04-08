@@ -108,7 +108,6 @@ if user_input:
         st.markdown(reply)
 
 # ========================= SCREENSHOT SOLVER =========================
-st.title("📸 Screenshot Problem Solver")
 
 uploaded_file = st.file_uploader(
     "Upload a screenshot of your problem",
