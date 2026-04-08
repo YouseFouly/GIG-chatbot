@@ -66,7 +66,7 @@ lottie = load_lottie(
 )
 
 if lottie:
-    st_lottie(lottie, height=250)
+    st_lottie(lottie, height=200)
 
 # ========================= CHAT =========================
 SYSTEM_PROMPT = """
