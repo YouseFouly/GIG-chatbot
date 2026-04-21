@@ -106,13 +106,22 @@ The university focuses on innovation and real-world impact.
 Help students clearly and effectively.
 """
 
-full_prompt = f"{SYSTEM_PROMPT}\n\nStudent Question:\n{user_input}"
+# --- User Input Section ---
+# Use st.chat_input for a modern look, or st.text_input
+user_input = st.chat_input("Ask a question about GIG or Nile University:")
 
-relevant_chunks = retrieve_chunks(user_input)
+# --- RAG Logic ---
+# This block ONLY runs after the user presses Enter
+if user_input:
+    # 1. Get the relevant data from your FAISS index
+    # (Assuming retrieve_chunks is defined earlier in your script)
+    relevant_chunks = retrieve_chunks(user_input)
+    
+    # 2. Combine the chunks into a single context string
+    context = "\n\n".join(relevant_chunks)
 
-context = "\n\n".join(relevant_chunks)
-
-full_prompt = f"""
+    # 3. Build the final prompt with the retrieved context
+    full_prompt = f"""
 {SYSTEM_PROMPT}
 
 You MUST answer using ONLY the following information:
