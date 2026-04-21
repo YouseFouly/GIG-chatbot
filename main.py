@@ -1,3 +1,7 @@
+import faiss
+import pickle
+import numpy as np
+from sentence_transformers import SentenceTransformer
 import streamlit as st
 import google.generativeai as genai
 import requests
