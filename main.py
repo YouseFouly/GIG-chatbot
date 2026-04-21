@@ -90,6 +90,7 @@ if lottie:
     st_lottie(lottie, height=250)
 
 # ========================= CHAT =========================
+# 1. Define the System Prompt
 SYSTEM_PROMPT = """
 You are a helpful assistant supporting students of the GIG platform.
 
@@ -106,21 +107,31 @@ The university focuses on innovation and real-world impact.
 Help students clearly and effectively.
 """
 
-# --- User Input Section ---
-# Use st.chat_input for a modern look, or st.text_input
-user_input = st.chat_input("Ask a question about GIG or Nile University:")
+# 2. Initialize Chat History in Session State
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
-# --- RAG Logic ---
-# This block ONLY runs after the user presses Enter
+# 3. Display Chat History (Shows previous messages on the UI)
+for msg in st.session_state.chat_history:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+# 4. Chat Input (ONLY ONE BOX HERE)
+user_input = st.chat_input("What is your problem with the courses?")
+
+# 5. Handle the Input
 if user_input:
-    # 1. Get the relevant data from your FAISS index
-    # (Assuming retrieve_chunks is defined earlier in your script)
+    # A. Append and Display the User Message
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    # B. RAG Logic: Retrieve information based on the user's question
+    # This must happen inside the 'if' block to avoid NameErrors
     relevant_chunks = retrieve_chunks(user_input)
-    
-    # 2. Combine the chunks into a single context string
     context = "\n\n".join(relevant_chunks)
 
-    # 3. Build the final prompt with the retrieved context
+    # C. Build the Grounded Prompt (Combining Prompt + Data + Question)
     full_prompt = f"""
 {SYSTEM_PROMPT}
 
@@ -135,27 +146,14 @@ Question:
 {user_input}
 """
 
-# Display chat history
-for msg in st.session_state.chat_history:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-# Chat input
-user_input = st.chat_input("What is your problem with the courses?")
-
-if user_input:
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
-
-    with st.chat_message("user"):
-        st.markdown(user_input)
-
-    full_prompt = f"{SYSTEM_PROMPT}\n\nStudent Question:\n{user_input}"
-    reply = get_text_response(full_prompt)
-
-    st.session_state.chat_history.append({"role": "assistant", "content": reply})
-
+    # D. Get Response from your LLM function
     with st.chat_message("assistant"):
+        # We send the 'full_prompt' which contains the context from FAISS
+        reply = get_text_response(full_prompt)
         st.markdown(reply)
+
+    # E. Save Assistant Response to History
+    st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
 # ========================= SCREENSHOT SOLVER =========================
 
