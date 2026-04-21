@@ -25,6 +25,19 @@ def configure_gemini():
 
 configure_gemini()
 
+@st.cache_resource
+def load_rag():
+    index = faiss.read_index("index.faiss")
+
+    with open("chunks.pkl", "rb") as f:
+        chunks = pickle.load(f)
+
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    return index, chunks, model
+
+index, chunks, embed_model = load_rag()
+
 # ========================= HELPERS =========================
 def load_lottie(url: str):
     try:
@@ -52,8 +65,12 @@ def get_vision_response(prompt: str, image):
         return response.text.strip()
     except Exception as e:
         return f"❌ Error: {e}"
+    
+def retrieve_chunks(query, k=3):
+    query_embedding = embed_model.encode([query])
+    distances, indices = index.search(query_embedding, k)
 
-
+    return [chunks[i] for i in indices[0]]
 # ========================= SESSION =========================
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -87,6 +104,26 @@ It offers programs in:
 
 The university focuses on innovation and real-world impact.
 Help students clearly and effectively.
+"""
+
+full_prompt = f"{SYSTEM_PROMPT}\n\nStudent Question:\n{user_input}"
+
+relevant_chunks = retrieve_chunks(user_input)
+
+context = "\n\n".join(relevant_chunks)
+
+full_prompt = f"""
+{SYSTEM_PROMPT}
+
+You MUST answer using ONLY the following information:
+
+{context}
+
+If the answer is not in the data above, say:
+"مش متأكد من الإجابة من البيانات المتاحة"
+
+Question:
+{user_input}
 """
 
 # Display chat history
@@ -143,6 +180,11 @@ if uploaded_file and st.button("Solve Problem"):
         result = get_vision_response(VISION_PROMPT, image)
 
     st.info(result)
+
+
+
+
+
 
 
 
