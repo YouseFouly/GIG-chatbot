@@ -15,6 +15,9 @@ st.set_page_config(
     layout="centered"
 )
 
+# ========================= SIDEBAR =========================
+page = st.sidebar.radio("Navigate", ["💬 Chat Assistant", "🖼️ Image Solver"])
+
 # ========================= API SETUP =========================
 def configure_gemini():
     try:
@@ -25,6 +28,7 @@ def configure_gemini():
 
 configure_gemini()
 
+# ========================= LOAD RAG =========================
 @st.cache_resource
 def load_rag():
     index = faiss.read_index("index.faiss")
@@ -44,8 +48,7 @@ def load_lottie(url: str):
         response = requests.get(url)
         response.raise_for_status()
         return response.json()
-    except Exception:
-        st.error("❌ Failed to load animation.")
+    except:
         return None
 
 
@@ -65,32 +68,14 @@ def get_vision_response(prompt: str, image):
         return response.text.strip()
     except Exception as e:
         return f"❌ Error: {e}"
-    
+
+
 def retrieve_chunks(query, k=3):
     query_embedding = embed_model.encode([query])
     distances, indices = index.search(query_embedding, k)
-
     return [chunks[i] for i in indices[0]]
-# ========================= SESSION =========================
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
 
-# ========================= UI =========================
-st.markdown("""
-<div style='text-align: center;'>
-    <h3>Hello! I’m Gigo, your virtual assistant</h3>
-</div>
-""", unsafe_allow_html=True)
-
-lottie = load_lottie(
-    "https://lottie.host/2fd251ba-a67b-4ea8-b9ea-ae3b1b5425f5/7AUv2Ddn0H.json"
-)
-
-if lottie:
-    st_lottie(lottie, height=250)
-
-# ========================= CHAT =========================
-# 1. Define the System Prompt
+# ========================= SYSTEM PROMPT =========================
 SYSTEM_PROMPT = """
 You are a helpful assistant supporting students of the GIG platform.
 
@@ -107,32 +92,41 @@ The university focuses on innovation and real-world impact.
 Help students clearly and effectively.
 """
 
-# 2. Initialize Chat History in Session State
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+# ========================= PAGE 1: CHAT =========================
+if page == "💬 Chat Assistant":
 
-# 3. Display Chat History (Shows previous messages on the UI)
-for msg in st.session_state.chat_history:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
+    # Session state
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
 
-# 4. Chat Input (ONLY ONE BOX HERE)
-user_input = st.chat_input("What is your problem with the courses?")
+    # Header
+    st.markdown("<h3 style='text-align: center;'>Hello! I’m Gigo 🤖</h3>", unsafe_allow_html=True)
 
-# 5. Handle the Input
-if user_input:
-    # A. Append and Display the User Message
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
-    with st.chat_message("user"):
-        st.markdown(user_input)
+    # Animation
+    lottie = load_lottie("https://lottie.host/2fd251ba-a67b-4ea8-b9ea-ae3b1b5425f5/7AUv2Ddn0H.json")
+    if lottie:
+        st_lottie(lottie, height=250)
 
-    # B. RAG Logic: Retrieve information based on the user's question
-    # This must happen inside the 'if' block to avoid NameErrors
-    relevant_chunks = retrieve_chunks(user_input)
-    context = "\n\n".join(relevant_chunks)
+    # Display chat history
+    for msg in st.session_state.chat_history:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-    # C. Build the Grounded Prompt (Combining Prompt + Data + Question)
-    full_prompt = f"""
+    # Input
+    user_input = st.chat_input("What is your problem with the courses?")
+
+    if user_input:
+        # User message
+        st.session_state.chat_history.append({"role": "user", "content": user_input})
+        with st.chat_message("user"):
+            st.markdown(user_input)
+
+        # RAG retrieval
+        relevant_chunks = retrieve_chunks(user_input)
+        context = "\n\n".join(relevant_chunks)
+
+        # Prompt
+        full_prompt = f"""
 {SYSTEM_PROMPT}
 
 You MUST answer using ONLY the following information:
@@ -146,23 +140,25 @@ Question:
 {user_input}
 """
 
-    # D. Get Response from your LLM function
-    with st.chat_message("assistant"):
-        # We send the 'full_prompt' which contains the context from FAISS
-        reply = get_text_response(full_prompt)
-        st.markdown(reply)
+        # Assistant response
+        with st.chat_message("assistant"):
+            reply = get_text_response(full_prompt)
+            st.markdown(reply)
 
-    # E. Save Assistant Response to History
-    st.session_state.chat_history.append({"role": "assistant", "content": reply})
+        st.session_state.chat_history.append({"role": "assistant", "content": reply})
 
-# ========================= SCREENSHOT SOLVER =========================
 
-uploaded_file = st.file_uploader(
-    "Upload a screenshot of your problem",
-    type=["jpg", "jpeg", "png"]
-)
+# ========================= PAGE 2: IMAGE SOLVER =========================
+elif page == "🖼️ Image Solver":
 
-VISION_PROMPT = """
+    st.title("🖼️ Screenshot Problem Solver")
+
+    uploaded_file = st.file_uploader(
+        "Upload a screenshot of your problem",
+        type=["jpg", "jpeg", "png"]
+    )
+
+    VISION_PROMPT = """
 You are an intelligent assistant.
 
 Analyze the screenshot carefully and understand the problem.
@@ -178,22 +174,15 @@ Requirements:
 - Be clear and concise
 """
 
-if uploaded_file and st.button("Solve Problem"):
-    image = Image.open(uploaded_file)
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Screenshot")
 
-    st.image(image, caption="Uploaded Screenshot")
+        if st.button("Solve Problem"):
+            with st.spinner("Analyzing..."):
+                result = get_vision_response(VISION_PROMPT, image)
 
-    with st.spinner("Analyzing..."):
-        result = get_vision_response(VISION_PROMPT, image)
-
-    st.info(result)
-
-
-
-
-
-
-
+            st.success(result)
 
 
 
