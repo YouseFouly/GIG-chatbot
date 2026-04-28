@@ -98,8 +98,8 @@ Rules:
 # ========================= PAGE 1: CHAT =========================
 if selected == "Chat Assistant":
 
-    st.title("🤖 GIG Chat Assistant")
-    st.markdown("### Hello! I’m Gigo 🤖 — Ask me anything about the GIG program")
+    st.title("🤖 GIGO")
+    st.markdown("### Hello! I’m your friend Gigo, how can i help you?")
 
     # Animation
     lottie = load_lottie("https://lottie.host/2fd251ba-a67b-4ea8-b9ea-ae3b1b5425f5/7AUv2Ddn0H.json")
