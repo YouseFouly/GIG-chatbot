@@ -90,6 +90,10 @@ It offers programs in:
 
 The university focuses on innovation and real-world impact.
 Help students clearly and effectively.
+
+Always, make the answer in the question language, if user asked a question in Arabic,
+answer in Arabic, and if the user 
+asked a question in English, answer in English.
 """
 
 # ========================= PAGE 1: CHAT =========================
