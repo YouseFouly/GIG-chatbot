@@ -36,7 +36,7 @@ def load_rag():
     with open("chunks.pkl", "rb") as f:
         chunks = pickle.load(f)
 
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
     return index, chunks, model
 
