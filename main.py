@@ -201,7 +201,7 @@ with st.sidebar:
 if selected == "Chat Assistant":
 
     st.title("🤖 GIGO")
-    st.markdown("### Hi I'm GIGO, how can i help you? ")
+    st.markdown("### Hi I'm GIGO, how can i help you ")
 
     lottie = load_lottie("https://lottie.host/2fd251ba-a67b-4ea8-b9ea-ae3b1b5425f5/7AUv2Ddn0H.json")
     if lottie:
