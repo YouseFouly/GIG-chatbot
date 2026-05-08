@@ -212,8 +212,15 @@ if selected == "Chat Assistant":
 
     # Display all previous messages
     for msg in st.session_state.chat_history:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["text"])
+    with st.chat_message(msg["role"]):
+        st.markdown(
+            f"""
+            <div dir="rtl" style="text-align: right; line-height:2;">
+            {msg["text"]}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     user_input = st.chat_input("Ask your question here... / اكتب سؤالك هنا...")
 
@@ -221,7 +228,12 @@ if selected == "Chat Assistant":
         # Show user message immediately
         st.session_state.chat_history.append({"role": "user", "text": user_input})
         with st.chat_message("user"):
-            st.markdown(user_input)
+            st.markdown(f"""
+                        <div dir="rtl" style="text-align: right; line-height:2;">
+                        {user_input}
+                        </div>
+                        """,
+                        unsafe_allow_html=True)
 
         # Retrieve relevant Arabic context chunks
         relevant_chunks = retrieve_chunks(user_input)
