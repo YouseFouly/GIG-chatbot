@@ -6,3 +6,4 @@ PyPDF2
 sentence-transformers
 faiss-cpu
 streamlit-option-menu
+PyMuPDF==1.26.0
