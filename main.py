@@ -222,7 +222,7 @@ if selected == "Chat Assistant":
                     unsafe_allow_html=True
                 )
 
-    user_input = st.chat_input("Ask your question here... / اكتب سؤالك هنا...")
+    user_input = st.chat_input("حابب تسأل عن ايه..")
 
     if user_input:
         # Show user message immediately
@@ -252,7 +252,7 @@ QUESTION:
 
         # Generate response — stateless, no history injection
         with st.chat_message("assistant"):
-            with st.spinner("🤔 بفكر..."):
+            with st.spinner("بفكر..."):
                 reply = get_text_response(SYSTEM_PROMPT, augmented_message)
                 st.markdown( f"""
                             <div dir="rtl" style="text-align: right; line-height:2;">
