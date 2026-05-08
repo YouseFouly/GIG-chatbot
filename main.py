@@ -12,6 +12,27 @@ from streamlit_lottie import st_lottie
 # ========================= CONFIG =========================
 st.set_page_config(page_title="GIG Assistant", page_icon="🧠", layout="centered")
 
+st.markdown("""
+<style>
+html, body, [class*="css"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Fix chat message layout */
+.stChatMessage {
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: embed;
+}
+
+/* Better Arabic rendering */
+p, li, div {
+    line-height: 2;
+}
+</style>
+""", unsafe_allow_html=True)
+
 EMBED_MODEL_NAME = "intfloat/multilingual-e5-large"
 TOP_K = 5
 SIMILARITY_THRESHOLD = 0.25   # lowered from 0.35 → Arabic embeddings score lower
@@ -221,7 +242,12 @@ QUESTION:
         with st.chat_message("assistant"):
             with st.spinner("🤔 بفكر..."):
                 reply = get_text_response(SYSTEM_PROMPT, augmented_message)
-                st.markdown(reply)
+                st.markdown( f"""
+                            <div dir="rtl" style="text-align: right; line-height:2;">
+                            {reply}
+                            </div>
+                            """,
+                            unsafe_allow_html=True)
 
         st.session_state.chat_history.append({"role": "assistant", "text": reply})
 
