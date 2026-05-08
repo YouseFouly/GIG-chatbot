@@ -212,15 +212,15 @@ if selected == "Chat Assistant":
 
     # Display all previous messages
     for msg in st.session_state.chat_history:
-    with st.chat_message(msg["role"]):
-        st.markdown(
-            f"""
-            <div dir="rtl" style="text-align: right; line-height:2;">
-            {msg["text"]}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+            with st.chat_message(msg["role"]):
+                st.markdown(
+                    f"""
+                    <div dir="rtl" style="text-align: right; line-height:2;">
+                    {msg["text"]}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
     user_input = st.chat_input("Ask your question here... / اكتب سؤالك هنا...")
 
