@@ -718,4 +718,3 @@ elif selected == "Image Solver":
                 )
 
             st.success(result)
-```
