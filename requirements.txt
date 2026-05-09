@@ -1,9 +1,8 @@
-streamlit
-google-generativeai
-streamlit-lottie
+beautifulsoup4
 requests
-PyPDF2 
+pymupdf
 sentence-transformers
 faiss-cpu
 streamlit-option-menu
-PyMuPDF==1.26.0
+streamlit-lottie
+google-generativeai
