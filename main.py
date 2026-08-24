@@ -413,7 +413,7 @@ if selected == "Chat Assistant":
     st.title("🤖 GIGO")
 
     st.markdown(
-        "### Hi I'm GIGO, how can I help you"
+        "### Hey! I’m GIGO. Let’s turn your questions into answers"
     )
 
     # ======================================================
